@@ -28,7 +28,6 @@
 //////////////////////////////////////////////////////////////////////////////////////
 
 class Main extends egret.DisplayObjectContainer {
-
     /**
      * 加载进度界面
      * Process interface loading
@@ -118,12 +117,13 @@ class Main extends egret.DisplayObjectContainer {
      * Create a game scene
      */
     private createGameScene(): void {
-        var sky: egret.Bitmap = this.createBitmapByName("bg_jpg");
-        this.addChild(sky);
+        var numCols = 10;
+        var numRows = 10;
+        var map: TileMap = new TileMap();
+        this.addChild(map);
         var stageW: number = this.stage.stageWidth;
         var stageH: number = this.stage.stageHeight;
-        sky.width = stageW;
-        sky.height = stageH;
+        this.touchEnabled = true;
 
         this.Player = new Character();
         this.addChild(this.Player);
@@ -343,8 +343,8 @@ class characterWalkState implements State {
             this.TotleTime--;
             if (this.TotleTime < 1) {
                 this.timer.stop();
-                if (this.TotleTime > -5) { 
-                    this.Player.Idle(); 
+                if (this.TotleTime > -5) {
+                    this.Player.Idle();
                 }
             }
         }, this);

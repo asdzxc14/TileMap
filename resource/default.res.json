@@ -1,7 +1,7 @@
 {
 	"groups": [
 		{
-			"keys": "bg_jpg,description_json,01_png,02_png,03_png,04_png,05_png,06_png,07_png,08_png,09_png,10_png,21_png,22_png,35_png,34_png,33_png,32_png,31_png,29_png,30_png,28_png,27_png,26_png,25_png,24_png,23_png",
+			"keys": "bg_jpg,description_json,01_png,02_png,03_png,04_png,05_png,06_png,07_png,08_png,09_png,10_png,21_png,22_png,35_png,34_png,33_png,32_png,31_png,29_png,30_png,28_png,27_png,26_png,25_png,24_png,23_png,ground_jpg,obstacle_jpg",
 			"name": "preload"
 		}
 	],
@@ -140,6 +140,16 @@
 			"name": "23_png",
 			"type": "image",
 			"url": "assets/Walk/23.png"
+		},
+		{
+			"name": "ground_jpg",
+			"type": "image",
+			"url": "assets/ground.jpg"
+		},
+		{
+			"name": "obstacle_jpg",
+			"type": "image",
+			"url": "assets/obstacle.jpg"
 		}
 	]
 }

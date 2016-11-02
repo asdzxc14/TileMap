@@ -101,12 +101,13 @@ var Main = (function (_super) {
      * Create a game scene
      */
     p.createGameScene = function () {
-        var sky = this.createBitmapByName("bg_jpg");
-        this.addChild(sky);
+        var numCols = 10;
+        var numRows = 10;
+        var map = new TileMap();
+        this.addChild(map);
         var stageW = this.stage.stageWidth;
         var stageH = this.stage.stageHeight;
-        sky.width = stageW;
-        sky.height = stageH;
+        this.touchEnabled = true;
         this.Player = new Character();
         this.addChild(this.Player);
         this.Player.x = stageW / 2;
