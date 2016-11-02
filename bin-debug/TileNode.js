@@ -1,6 +1,6 @@
 var TileNode = (function () {
     function TileNode(x, y) {
-        this.walkable = true;
+        this.costMultiplier = 1.0;
         this.x = x;
         this.y = y;
     }
@@ -8,4 +8,4 @@ var TileNode = (function () {
     return TileNode;
 }());
 egret.registerClass(TileNode,'TileNode');
-//# sourceMappingURL=TilrNode.js.map
+//# sourceMappingURL=TileNode.js.map

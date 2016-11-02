@@ -1,141 +1,143 @@
-//AStar寻路
 class AStar {
+    private _open: Tile[];
+    private _closed: Tile[];
+    private tileMap: GameMap;
+    public startTile: Tile;
+    public endTile: Tile;
+    public pathArray: Tile[];
+    private straightCost: number = 1.0;
+    private diagCost: number = Math.SQRT2;
+    private heuristic: Function = this.diagonal;
+    constructor() { };
 
-    private _startPoint: TileNode;
-    private _endPoint: TileNode;
-    private _openList: TileNode[];
-    private _closeList: TileNode[];
-    private _grid: Grid;
-    private _path: TileNode[];
-    private _heuristic: Function = this.euclidian;
-    private _straightCost: number = 1;
-    //private _diagCost: number = Math.SQRT2;
-
-    constructor() {
-
-    }
-
-    public findPath(grid: Grid): boolean {
-
-        this._grid = grid;
-        this._openList = new Array();
-        this._closeList = new Array();
-        this._startPoint = this._grid.getStartNode();
-        this._endPoint = this._grid.getEndNode();
-
-        this._startPoint.g = 0;
-        this._startPoint.h = this._heuristic(this._startPoint);
-        this._startPoint.f = this._startPoint.g + this._startPoint.h;
-        //console.log("findpath");
+    public findPath(tileMap: GameMap): any {
+        var h = 0;
+        var g = 0;
+        this.pathArray = [];
+        this.tileMap = tileMap;
+        this._open = [];
+        this._closed = [];
+        this.startTile = tileMap.startTile;
+        this.endTile = tileMap.endTile;
+        this.startTile.tileData.g = 0;
+        this.startTile.tileData.h = this.heuristic(this.startTile);
+        this.startTile.tileData.f = this.startTile.tileData.g + this.startTile.tileData.h;
         return this.search();
     }
 
-    //主搜寻方法
-    public search(): boolean {
+    private isOpen(tile: Tile): any {
+        for (var i = 0; i < this._open.length; i++) {
+            if (tile == this._open[i]) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-        var searchpoint: TileNode = this._startPoint;
+    private isClosed(tile: Tile): any {
+        for (var i = 0; i < this._closed.length; i++) {
+            if (tile == this._closed[i]) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-        while (searchpoint != this._endPoint) {
+    private findMinFInOpenArray(): any {
+        var i = 0;
+        var temp: Tile;
+        for (var j = 0; j < this._open.length; j++) {
+            if (this._open[i].tileData.f > this._open[j].tileData.f) {
+                i = j;
+            }
+        }
+        temp = this._open[i];
+        for (j = i; j < this._open.length - 1; j++) {
+            this._open[j] = this._open[j + 1];
+        }
+        this._open.pop();
+        return temp;
+    }
 
-            //获取当前点的周围点
-            var startX: number = Math.max(0, searchpoint.x - 1);
-            var endX: number = Math.min(this._grid.getNumCols() - 1, searchpoint.x + 1);
-            var startY: number = Math.max(0, searchpoint.y - 1);
-            var endY: number = Math.min(this._grid.getNumRows() - 1, searchpoint.y + 1);
+    public search(): any {
+        var tile = this.startTile;
 
-            //循环处理每个点
+        while (tile != this.endTile) {
+            var startX: number = Math.max(0, tile.tileData.x - 1);
+            var endX: number = Math.min(this.tileMap.numCols - 1, tile.tileData.x + 1);
+            var startY: number = Math.max(0, tile.tileData.y - 1);
+            var endY: number = Math.min(this.tileMap.numRows - 1, tile.tileData.y + 1);
             for (var i: number = startX; i <= endX; i++) {
                 for (var j: number = startY; j <= endY; j++) {
-                    var test: TileNode = this._grid.getNode(i, j);
-                    //剔除：当前点、不可经过的点、斜线方向的点（即只能直线移动）
-                    if (test == searchpoint || !test.walkable || Math.abs(i - searchpoint.x) + Math.abs(j - searchpoint.y) == 2) { continue; }
-                    var cost: number = this._straightCost;
-                    /*if (!((searchpoint.x == test.x) || (searchpoint.y == test.y))) {
-                        cost = this._diagCost;
-                    }*/
-                    var g: number = searchpoint.g + cost;
-                    var h: number = this._heuristic(test);
+                    var test: Tile = this.tileMap.getTile(i, j);
+                    if (test == tile || !test.tileData.walkable || !this.tileMap.getTile(tile.tileData.x, test.tileData.y).tileData.walkable || !this.tileMap.getTile(test.tileData.x, tile.tileData.y).tileData.walkable) {
+                        continue;
+                    }
+                    var cost: number = this.straightCost;
+                    if (!((tile.tileData.x == test.tileData.x) || (tile.tileData.y == test.tileData.y))) {
+                        cost = this.diagCost;
+                    }
+                    var g: number = tile.tileData.g + cost * test.tileData.costMultiplier;
+                    var h: number = this.heuristic(test);
                     var f: number = g + h;
                     if (this.isOpen(test) || this.isClosed(test)) {
-                        if (test.f > f) {
-                            test.f = f;
-                            test.g = g;
-                            test.h = h;
-                            test.parent = searchpoint;
+                        if (test.tileData.f > f) {
+                            test.tileData.f = f;
+                            test.tileData.g = g;
+                            test.tileData.h = h;
+                            test.tileParent = tile;
                         }
                     }
                     else {
-                        test.f = f;
-                        test.g = g;
-                        test.h = h;
-                        test.parent = searchpoint;
-                        this._openList.push(test);
+                        test.tileData.f = f;
+                        test.tileData.g = g;
+                        test.tileData.h = h;
+                        test.tileParent = tile;
+                        this._open.push(test);
                     }
+
                 }
             }
-            this._closeList.push(searchpoint);
-            if (this._openList.length == 0) {
-                alert("no path found");
-                return false;
+            this._closed.push(tile);
+            if (this._open.length == 0) {
+                console.log("no path found");
+                return false
             }
-            this._openList.sort(function (a, b) {
-                return a.f - b.f;
-            });
-            searchpoint = this._openList.shift() as TileNode;
+            tile = this.findMinFInOpenArray();
         }
         this.buildPath();
-        //console.log("buildpath");
         return true;
+
     }
 
-    //根据建立的点链表回推路径
     private buildPath(): void {
 
-        this._path = new Array();
-        var point: TileNode = this._endPoint;
-        this._path.push(point);
-        while (point != this._startPoint) {
-            point = point.parent;
-            this._path.unshift(point);
-
+        var tile: Tile = this.endTile;
+        this.pathArray.push(tile);
+        while (tile != this.startTile) {
+            tile = tile.tileParent;
+            this.pathArray.unshift(tile);
         }
-        //console.log(point);
     }
 
-    //获取路径
-    public getPath(): TileNode[] {
-        return this._path;
+
+    private emanhattan(tile: Tile): number {
+        return Math.abs(tile.x - this.endTile.tileData.x) * this.straightCost +
+            Math.abs(tile.y + this.endTile.tileData.y) * this.straightCost;
     }
 
-    //判断是否处于O表内
-    private isOpen(point: TileNode): boolean {
-        for (var i: number = 0; i < this._openList.length; i++) {
-            if (this._openList[i] == point) {
-                return true;
-            }
-        }
-        return false;
+    private euclidian(tile: Tile): number {
+        var dx: number = tile.x - this.endTile.tileData.x;
+        var dy: number = tile.y - this.endTile.tileData.y;
+        return Math.sqrt(dx * dx + dy * dy) * this.straightCost;
     }
 
-    //判断是否处于C表内
-    private isClosed(point: TileNode): boolean {
-        for (var i: number = 0; i < this._closeList.length; i++) {
-            if (this._closeList[i] == point) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    //欧几里得启发函数
-    private euclidian(point: TileNode): number {
-        var result: number = Math.sqrt(Math.pow(point.x - this._endPoint.x, 2) + Math.pow(point.y - this._endPoint.y, 2));
-        return result;
-    }
-
-    public visited(): TileNode[] {
-        return this._closeList.concat(this._openList);
+    private diagonal(tile: Tile): number {
+        var dx: number = Math.abs(tile.tileData.x - this.endTile.tileData.x);
+        var dy: number = Math.abs(tile.tileData.y - this.endTile.tileData.y);
+        var diag: number = Math.min(dx, dy);
+        var straight: number = dx + dy;
+        return this.diagCost * diag + this.straightCost * (straight - 2 * diag);
     }
 
 }
-

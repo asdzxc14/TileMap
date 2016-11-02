@@ -1,118 +1,126 @@
-//AStar寻路
 var AStar = (function () {
-    //private _diagCost: number = Math.SQRT2;
     function AStar() {
-        this._heuristic = this.euclidian;
-        this._straightCost = 1;
+        this.straightCost = 1.0;
+        this.diagCost = Math.SQRT2;
+        this.heuristic = this.diagonal;
     }
     var d = __define,c=AStar,p=c.prototype;
-    p.findPath = function (grid) {
-        this._grid = grid;
-        this._openList = new Array();
-        this._closeList = new Array();
-        this._startPoint = this._grid.getStartNode();
-        this._endPoint = this._grid.getEndNode();
-        this._startPoint.g = 0;
-        this._startPoint.h = this._heuristic(this._startPoint);
-        this._startPoint.f = this._startPoint.g + this._startPoint.h;
-        //console.log("findpath");
+    ;
+    p.findPath = function (tileMap) {
+        var h = 0;
+        var g = 0;
+        this.pathArray = [];
+        this.tileMap = tileMap;
+        this._open = [];
+        this._closed = [];
+        this.startTile = tileMap.startTile;
+        this.endTile = tileMap.endTile;
+        this.startTile.tileData.g = 0;
+        this.startTile.tileData.h = this.heuristic(this.startTile);
+        this.startTile.tileData.f = this.startTile.tileData.g + this.startTile.tileData.h;
         return this.search();
     };
-    //主搜寻方法
+    p.isOpen = function (tile) {
+        for (var i = 0; i < this._open.length; i++) {
+            if (tile == this._open[i]) {
+                return true;
+            }
+        }
+        return false;
+    };
+    p.isClosed = function (tile) {
+        for (var i = 0; i < this._closed.length; i++) {
+            if (tile == this._closed[i]) {
+                return true;
+            }
+        }
+        return false;
+    };
+    p.findMinFInOpenArray = function () {
+        var i = 0;
+        var temp;
+        for (var j = 0; j < this._open.length; j++) {
+            if (this._open[i].tileData.f > this._open[j].tileData.f) {
+                i = j;
+            }
+        }
+        temp = this._open[i];
+        for (j = i; j < this._open.length - 1; j++) {
+            this._open[j] = this._open[j + 1];
+        }
+        this._open.pop();
+        return temp;
+    };
     p.search = function () {
-        var searchpoint = this._startPoint;
-        while (searchpoint != this._endPoint) {
-            //获取当前点的周围点
-            var startX = Math.max(0, searchpoint.x - 1);
-            var endX = Math.min(this._grid.getNumCols() - 1, searchpoint.x + 1);
-            var startY = Math.max(0, searchpoint.y - 1);
-            var endY = Math.min(this._grid.getNumRows() - 1, searchpoint.y + 1);
-            //循环处理每个点
+        var tile = this.startTile;
+        while (tile != this.endTile) {
+            var startX = Math.max(0, tile.tileData.x - 1);
+            var endX = Math.min(this.tileMap.numCols - 1, tile.tileData.x + 1);
+            var startY = Math.max(0, tile.tileData.y - 1);
+            var endY = Math.min(this.tileMap.numRows - 1, tile.tileData.y + 1);
             for (var i = startX; i <= endX; i++) {
                 for (var j = startY; j <= endY; j++) {
-                    var test = this._grid.getNode(i, j);
-                    //剔除：当前点、不可经过的点、斜线方向的点（即只能直线移动）
-                    if (test == searchpoint || !test.walkable || Math.abs(i - searchpoint.x) + Math.abs(j - searchpoint.y) == 2) {
+                    var test = this.tileMap.getTile(i, j);
+                    if (test == tile || !test.tileData.walkable || !this.tileMap.getTile(tile.tileData.x, test.tileData.y).tileData.walkable || !this.tileMap.getTile(test.tileData.x, tile.tileData.y).tileData.walkable) {
                         continue;
                     }
-                    var cost = this._straightCost;
-                    /*if (!((searchpoint.x == test.x) || (searchpoint.y == test.y))) {
-                        cost = this._diagCost;
-                    }*/
-                    var g = searchpoint.g + cost;
-                    var h = this._heuristic(test);
+                    var cost = this.straightCost;
+                    if (!((tile.tileData.x == test.tileData.x) || (tile.tileData.y == test.tileData.y))) {
+                        cost = this.diagCost;
+                    }
+                    var g = tile.tileData.g + cost * test.tileData.costMultiplier;
+                    var h = this.heuristic(test);
                     var f = g + h;
                     if (this.isOpen(test) || this.isClosed(test)) {
-                        if (test.f > f) {
-                            test.f = f;
-                            test.g = g;
-                            test.h = h;
-                            test.parent = searchpoint;
+                        if (test.tileData.f > f) {
+                            test.tileData.f = f;
+                            test.tileData.g = g;
+                            test.tileData.h = h;
+                            test.tileParent = tile;
                         }
                     }
                     else {
-                        test.f = f;
-                        test.g = g;
-                        test.h = h;
-                        test.parent = searchpoint;
-                        this._openList.push(test);
+                        test.tileData.f = f;
+                        test.tileData.g = g;
+                        test.tileData.h = h;
+                        test.tileParent = tile;
+                        this._open.push(test);
                     }
                 }
             }
-            this._closeList.push(searchpoint);
-            if (this._openList.length == 0) {
-                alert("no path found");
+            this._closed.push(tile);
+            if (this._open.length == 0) {
+                console.log("no path found");
                 return false;
             }
-            this._openList.sort(function (a, b) {
-                return a.f - b.f;
-            });
-            searchpoint = this._openList.shift();
+            tile = this.findMinFInOpenArray();
         }
         this.buildPath();
-        //console.log("buildpath");
         return true;
     };
-    //根据建立的点链表回推路径
     p.buildPath = function () {
-        this._path = new Array();
-        var point = this._endPoint;
-        this._path.push(point);
-        while (point != this._startPoint) {
-            point = point.parent;
-            this._path.unshift(point);
+        var tile = this.endTile;
+        this.pathArray.push(tile);
+        while (tile != this.startTile) {
+            tile = tile.tileParent;
+            this.pathArray.unshift(tile);
         }
-        //console.log(point);
     };
-    //获取路径
-    p.getPath = function () {
-        return this._path;
+    p.emanhattan = function (tile) {
+        return Math.abs(tile.x - this.endTile.tileData.x) * this.straightCost +
+            Math.abs(tile.y + this.endTile.tileData.y) * this.straightCost;
     };
-    //判断是否处于O表内
-    p.isOpen = function (point) {
-        for (var i = 0; i < this._openList.length; i++) {
-            if (this._openList[i] == point) {
-                return true;
-            }
-        }
-        return false;
+    p.euclidian = function (tile) {
+        var dx = tile.x - this.endTile.tileData.x;
+        var dy = tile.y - this.endTile.tileData.y;
+        return Math.sqrt(dx * dx + dy * dy) * this.straightCost;
     };
-    //判断是否处于C表内
-    p.isClosed = function (point) {
-        for (var i = 0; i < this._closeList.length; i++) {
-            if (this._closeList[i] == point) {
-                return true;
-            }
-        }
-        return false;
-    };
-    //欧几里得启发函数
-    p.euclidian = function (point) {
-        var result = Math.sqrt(Math.pow(point.x - this._endPoint.x, 2) + Math.pow(point.y - this._endPoint.y, 2));
-        return result;
-    };
-    p.visited = function () {
-        return this._closeList.concat(this._openList);
+    p.diagonal = function (tile) {
+        var dx = Math.abs(tile.tileData.x - this.endTile.tileData.x);
+        var dy = Math.abs(tile.tileData.y - this.endTile.tileData.y);
+        var diag = Math.min(dx, dy);
+        var straight = dx + dy;
+        return this.diagCost * diag + this.straightCost * (straight - 2 * diag);
     };
     return AStar;
 }());

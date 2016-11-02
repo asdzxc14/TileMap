@@ -1,224 +1,199 @@
-var config: TileData[] = [
-    { x: 0, y: 0, walkable: true, image: "ground_jpg" },
-    { x: 0, y: 1, walkable: true, image: "ground_jpg" },
-    { x: 0, y: 2, walkable: true, image: "ground_jpg" },
-    { x: 0, y: 3, walkable: true, image: "ground_jpg" },
-    { x: 0, y: 4, walkable: true, image: "ground_jpg" },
-    { x: 0, y: 5, walkable: true, image: "ground_jpg" },
-    { x: 0, y: 6, walkable: true, image: "ground_jpg" },
-    { x: 0, y: 7, walkable: true, image: "ground_jpg" },
-    { x: 0, y: 8, walkable: true, image: "ground_jpg" },
-    { x: 0, y: 9, walkable: true, image: "ground_jpg" },
-
-    { x: 1, y: 0, walkable: true, image: "ground_jpg" },
-    { x: 1, y: 1, walkable: true, image: "ground_jpg" },
-    { x: 1, y: 2, walkable: true, image: "ground_jpg" },
-    { x: 1, y: 3, walkable: true, image: "ground_jpg" },
-    { x: 1, y: 4, walkable: true, image: "ground_jpg" },
-    { x: 1, y: 5, walkable: true, image: "ground_jpg" },
-    { x: 1, y: 6, walkable: true, image: "ground_jpg" },
-    { x: 1, y: 7, walkable: true, image: "ground_jpg" },
-    { x: 1, y: 8, walkable: true, image: "ground_jpg" },
-    { x: 1, y: 9, walkable: true, image: "ground_jpg" },
-
-    { x: 2, y: 0, walkable: true, image: "ground_jpg" },
-    { x: 2, y: 1, walkable: true, image: "ground_jpg" },
-    { x: 2, y: 2, walkable: false, image: "obstacle_jpg" },
-    { x: 2, y: 3, walkable: false, image: "obstacle_jpg" },
-    { x: 2, y: 4, walkable: false, image: "obstacle_jpg" },
-    { x: 2, y: 5, walkable: false, image: "obstacle_jpg" },
-    { x: 2, y: 6, walkable: false, image: "obstacle_jpg" },
-    { x: 2, y: 7, walkable: true, image: "ground_jpg" },
-    { x: 2, y: 8, walkable: true, image: "ground_jpg" },
-    { x: 2, y: 9, walkable: true, image: "ground_jpg" },
-
-    { x: 3, y: 0, walkable: true, image: "ground_jpg" },
-    { x: 3, y: 1, walkable: true, image: "ground_jpg" },
-    { x: 3, y: 2, walkable: true, image: "ground_jpg" },
-    { x: 3, y: 3, walkable: true, image: "ground_jpg" },
-    { x: 3, y: 4, walkable: true, image: "ground_jpg" },
-    { x: 3, y: 5, walkable: true, image: "ground_jpg" },
-    { x: 3, y: 6, walkable: true, image: "ground_jpg" },
-    { x: 3, y: 7, walkable: true, image: "ground_jpg" },
-    { x: 3, y: 8, walkable: true, image: "ground_jpg" },
-    { x: 3, y: 9, walkable: true, image: "ground_jpg" },
-
-    { x: 4, y: 0, walkable: true, image: "ground_jpg" },
-    { x: 4, y: 1, walkable: true, image: "ground_jpg" },
-    { x: 4, y: 2, walkable: true, image: "ground_jpg" },
-    { x: 4, y: 3, walkable: true, image: "ground_jpg" },
-    { x: 4, y: 4, walkable: true, image: "ground_jpg" },
-    { x: 4, y: 5, walkable: true, image: "ground_jpg" },
-    { x: 4, y: 6, walkable: true, image: "ground_jpg" },
-    { x: 4, y: 7, walkable: true, image: "ground_jpg" },
-    { x: 4, y: 8, walkable: true, image: "ground_jpg" },
-    { x: 4, y: 9, walkable: true, image: "ground_jpg" },
-
-    { x: 5, y: 0, walkable: true, image: "ground_jpg" },
-    { x: 5, y: 1, walkable: false, image: "obstacle_jpg" },
-    { x: 5, y: 2, walkable: true, image: "ground_jpg" },
-    { x: 5, y: 3, walkable: true, image: "ground_jpg" },
-    { x: 5, y: 4, walkable: true, image: "ground_jpg" },
-    { x: 5, y: 5, walkable: true, image: "ground_jpg" },
-    { x: 5, y: 6, walkable: false, image: "obstacle_jpg" },
-    { x: 5, y: 7, walkable: false, image: "obstacle_jpg" },
-    { x: 5, y: 8, walkable: true, image: "ground_jpg" },
-    { x: 5, y: 9, walkable: true, image: "ground_jpg" },
-
-    { x: 6, y: 0, walkable: true, image: "ground_jpg" },
-    { x: 6, y: 1, walkable: false, image: "obstacle_jpg" },
-    { x: 6, y: 2, walkable: true, image: "ground_jpg" },
-    { x: 6, y: 3, walkable: true, image: "ground_jpg" },
-    { x: 6, y: 4, walkable: true, image: "ground_jpg" },
-    { x: 6, y: 5, walkable: true, image: "ground_jpg" },
-    { x: 6, y: 6, walkable: false, image: "obstacle_jpg" },
-    { x: 6, y: 7, walkable: true, image: "ground_jpg" },
-    { x: 6, y: 8, walkable: true, image: "ground_jpg" },
-    { x: 6, y: 9, walkable: true, image: "ground_jpg" },
-
-    { x: 7, y: 0, walkable: true, image: "ground_jpg" },
-    { x: 7, y: 1, walkable: false, image: "obstacle_jpg" },
-    { x: 7, y: 2, walkable: false, image: "obstacle_jpg" },
-    { x: 7, y: 3, walkable: false, image: "obstacle_jpg" },
-    { x: 7, y: 4, walkable: false, image: "obstacle_jpg" },
-    { x: 7, y: 5, walkable: true, image: "ground_jpg" },
-    { x: 7, y: 6, walkable: false, image: "obstacle_jpg" },
-    { x: 7, y: 7, walkable: true, image: "ground_jpg" },
-    { x: 7, y: 8, walkable: true, image: "ground_jpg" },
-    { x: 7, y: 9, walkable: true, image: "ground_jpg" },
-
-    { x: 8, y: 0, walkable: true, image: "ground_jpg" },
-    { x: 8, y: 1, walkable: true, image: "ground_jpg" },
-    { x: 8, y: 2, walkable: true, image: "ground_jpg" },
-    { x: 8, y: 3, walkable: true, image: "ground_jpg" },
-    { x: 8, y: 4, walkable: true, image: "ground_jpg" },
-    { x: 8, y: 5, walkable: true, image: "ground_jpg" },
-    { x: 8, y: 6, walkable: false, image: "obstacle_jpg" },
-    { x: 8, y: 7, walkable: true, image: "ground_jpg" },
-    { x: 8, y: 8, walkable: true, image: "ground_jpg" },
-    { x: 8, y: 9, walkable: true, image: "ground_jpg" },
-
-    { x: 9, y: 0, walkable: true, image: "ground_jpg" },
-    { x: 9, y: 1, walkable: true, image: "ground_jpg" },
-    { x: 9, y: 2, walkable: true, image: "ground_jpg" },
-    { x: 9, y: 3, walkable: true, image: "ground_jpg" },
-    { x: 9, y: 4, walkable: true, image: "ground_jpg" },
-    { x: 9, y: 5, walkable: true, image: "ground_jpg" },
-    { x: 9, y: 6, walkable: false, image: "obstacle_jpg" },
-    { x: 9, y: 7, walkable: true, image: "ground_jpg" },
-    { x: 9, y: 8, walkable: true, image: "ground_jpg" },
-    { x: 9, y: 9, walkable: true, image: "ground_jpg" },
-]
-/*
-
 class GameMap extends egret.DisplayObjectContainer {
-    public static tilesize = 64;
-    public constructor() {
-        super();
-        this.init();
-    }
-
-    private init() {
-        for (var i = 0; i < config.length; i++) {
-            var data = config[i];
-            var tile = new MapTile(data);
-            this.addChild(tile);
-        }
-    }
-}
-
-class MapTile extends egret.DisplayObjectContainer {
-    x: number;
-    y: number;
-    walkable: boolean;
-    image: string;
-
-    constructor(data) {
-        super();
-
-        var bitmap = new egret.Bitmap();
-        bitmap.texture = RES.getRes(this.image);
-
-        this.x = data.x * GameMap.tilesize;
-        this.y = data.y * GameMap.tilesize;
-
-        this.walkable = data.walkable;
-        this.image = data.image;
-
-        this.addChild(bitmap);
-    }
-}
-
-*/
-
-interface TileData {
-    x: number;
-    y: number;
-    walkable: boolean;
-    image: string;
-}
-
-
-//格子类
-class Tile extends egret.DisplayObjectContainer {
-
-    data: TileData;
-
-    constructor(data: TileData) {
-        super();
-        this.data = data;
-        var bitmap = new egret.Bitmap;
-        var size: number = 50;
-        bitmap.texture = RES.getRes(data.image);
-        bitmap.x = (data.x - 1) * size;
-        bitmap.y = (data.y - 1) * size;
-        this.addChild(bitmap);
-        //console.log(data.image)
-    }
-
-    public clickEvent(): void {
-        console.log(this.x);
-        console.log(this.y);
-    }
-}
-
-//地图类
-class TileMap extends egret.DisplayObjectContainer {
-
-    public static TILE_SIZE = 32;
+    private TextruesSize = 64;
+    public startTile: Tile;
+    public endTile: Tile;
+    public numCols: number;
+    public numRows: number;
+    public tileArray: Tile[];
 
     constructor() {
-        super();
+		super();
+        this.tileArray = [];
         this.init();
+        this.startTile = this.tileArray[0];
+        this.endTile = this.tileArray[0];
+        this.numCols = 10;
+        this.numRows = 10;
     }
 
     private init() {
+        var config: TileNode[] = [
+			{ x: 0, y: 0, walkable: true, pictureName: "ground_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+			{ x: 1, y: 0, walkable: true, pictureName: "ground_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+			{ x: 2, y: 0, walkable: true, pictureName: "ground_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+			{ x: 3, y: 0, walkable: true, pictureName: "ground_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+			{ x: 4, y: 0, walkable: true, pictureName: "ground_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+			{ x: 5, y: 0, walkable: true, pictureName: "ground_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+			{ x: 6, y: 0, walkable: true, pictureName: "ground_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+			{ x: 7, y: 0, walkable: true, pictureName: "ground_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+			{ x: 8, y: 0, walkable: true, pictureName: "ground_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+			{ x: 9, y: 0, walkable: true, pictureName: "ground_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
 
-        for (var i = 0; i < config.length; i++) {
-            var data = config[i];
-            var tile = new Tile(data);
-            this.addChild(tile);
-            //console.log("init success")
-        }
-        this.touchEnabled = true;
+			{ x: 0, y: 1, walkable: true, pictureName: "ground_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+			{ x: 1, y: 1, walkable: true, pictureName: "ground_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+			{ x: 2, y: 1, walkable: true, pictureName: "ground_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+			{ x: 3, y: 1, walkable: true, pictureName: "ground_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+			{ x: 4, y: 1, walkable: true, pictureName: "ground_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+			{ x: 5, y: 1, walkable: true, pictureName: "ground_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+			{ x: 6, y: 1, walkable: true, pictureName: "ground_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+			{ x: 7, y: 1, walkable: false, pictureName: "obstacle_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+			{ x: 8, y: 1, walkable: true, pictureName: "ground_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+			{ x: 9, y: 1, walkable: true, pictureName: "ground_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
 
+			{ x: 0, y: 2, walkable: true, pictureName: "ground_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+			{ x: 1, y: 2, walkable: false, pictureName: "obstacle_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+			{ x: 2, y: 2, walkable: true, pictureName: "ground_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+			{ x: 3, y: 2, walkable: true, pictureName: "ground_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+			{ x: 4, y: 2, walkable: true, pictureName: "ground_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+			{ x: 5, y: 2, walkable: true, pictureName: "ground_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+			{ x: 6, y: 2, walkable: true, pictureName: "ground_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+			{ x: 7, y: 2, walkable: false, pictureName: "obstacle_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+			{ x: 8, y: 2, walkable: true, pictureName: "ground_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+			{ x: 9, y: 2, walkable: true, pictureName: "ground_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+
+			{ x: 0, y: 3, walkable: true, pictureName: "ground_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+			{ x: 1, y: 3, walkable: true, pictureName: "ground_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+			{ x: 2, y: 3, walkable: false, pictureName: "obstacle_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+			{ x: 3, y: 3, walkable: true, pictureName: "ground_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+			{ x: 4, y: 3, walkable: true, pictureName: "ground_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+			{ x: 5, y: 3, walkable: true, pictureName: "ground_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+			{ x: 6, y: 3, walkable: true, pictureName: "ground_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+			{ x: 7, y: 3, walkable: false, pictureName: "obstacle_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+			{ x: 8, y: 3, walkable: true, pictureName: "ground_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+			{ x: 9, y: 3, walkable: true, pictureName: "ground_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+
+			{ x: 0, y: 4, walkable: true, pictureName: "ground_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+			{ x: 1, y: 4, walkable: true, pictureName: "ground_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+			{ x: 2, y: 4, walkable: false, pictureName: "obstacle_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+			{ x: 3, y: 4, walkable: true, pictureName: "ground_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+			{ x: 4, y: 4, walkable: true, pictureName: "ground_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+			{ x: 5, y: 4, walkable: true, pictureName: "ground_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+			{ x: 6, y: 4, walkable: true, pictureName: "ground_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+			{ x: 7, y: 4, walkable: false, pictureName: "obstacle_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+			{ x: 8, y: 4, walkable: false, pictureName: "obstacle_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+			{ x: 9, y: 4, walkable: false, pictureName: "obstacle_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+
+			{ x: 0, y: 5, walkable: true, pictureName: "ground_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+			{ x: 1, y: 5, walkable: true, pictureName: "ground_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+			{ x: 2, y: 5, walkable: false, pictureName: "obstacle_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+			{ x: 3, y: 5, walkable: true, pictureName: "ground_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+			{ x: 4, y: 5, walkable: true, pictureName: "ground_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+			{ x: 5, y: 5, walkable: true, pictureName: "ground_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+			{ x: 6, y: 5, walkable: true, pictureName: "ground_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+			{ x: 7, y: 5, walkable: true, pictureName: "ground_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+			{ x: 8, y: 5, walkable: true, pictureName: "ground_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+			{ x: 9, y: 5, walkable: false, pictureName: "obstacle_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+
+			{ x: 0, y: 6, walkable: true, pictureName: "ground_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+			{ x: 1, y: 6, walkable: false, pictureName: "obstacle_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+			{ x: 2, y: 6, walkable: false, pictureName: "obstacle_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+			{ x: 3, y: 6, walkable: true, pictureName: "ground_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+			{ x: 4, y: 6, walkable: true, pictureName: "ground_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+			{ x: 5, y: 6, walkable: false, pictureName: "obstacle_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+			{ x: 6, y: 6, walkable: false, pictureName: "obstacle_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+			{ x: 7, y: 6, walkable: false, pictureName: "obstacle_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+			{ x: 8, y: 6, walkable: false, pictureName: "obstacle_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+			{ x: 9, y: 6, walkable: false, pictureName: "obstacle_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+
+			{ x: 0, y: 7, walkable: true, pictureName: "ground_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+			{ x: 1, y: 7, walkable: false, pictureName: "obstacle_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+			{ x: 2, y: 7, walkable: true, pictureName: "ground_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+			{ x: 3, y: 7, walkable: true, pictureName: "ground_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+			{ x: 4, y: 7, walkable: true, pictureName: "ground_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+			{ x: 5, y: 7, walkable: false, pictureName: "obstacle_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+			{ x: 6, y: 7, walkable: true, pictureName: "ground_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+			{ x: 7, y: 7, walkable: true, pictureName: "ground_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+			{ x: 8, y: 7, walkable: true, pictureName: "ground_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+			{ x: 9, y: 7, walkable: true, pictureName: "ground_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+
+			{ x: 0, y: 8, walkable: true, pictureName: "ground_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+			{ x: 1, y: 8, walkable: true, pictureName: "ground_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+			{ x: 2, y: 8, walkable: true, pictureName: "ground_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+			{ x: 3, y: 8, walkable: true, pictureName: "ground_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+			{ x: 4, y: 8, walkable: true, pictureName: "ground_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+			{ x: 5, y: 8, walkable: false, pictureName: "obstacle_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+			{ x: 6, y: 8, walkable: true, pictureName: "ground_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+			{ x: 7, y: 8, walkable: true, pictureName: "ground_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+			{ x: 8, y: 8, walkable: true, pictureName: "ground_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+			{ x: 9, y: 8, walkable: true, pictureName: "ground_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+
+			{ x: 0, y: 9, walkable: true, pictureName: "ground_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+			{ x: 1, y: 9, walkable: true, pictureName: "ground_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+			{ x: 2, y: 9, walkable: true, pictureName: "ground_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+			{ x: 3, y: 9, walkable: true, pictureName: "ground_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+			{ x: 4, y: 9, walkable: true, pictureName: "ground_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+			{ x: 5, y: 9, walkable: true, pictureName: "ground_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+			{ x: 6, y: 9, walkable: true, pictureName: "ground_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+			{ x: 7, y: 9, walkable: true, pictureName: "ground_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+			{ x: 8, y: 9, walkable: true, pictureName: "ground_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+			{ x: 9, y: 9, walkable: true, pictureName: "ground_jpg", f: 0, g: 0, h: 0, costMultiplier: 1.0 },
+		]
+
+		for (let i = 0; i < config.length; i++) {
+			var tiledata = config[i];
+			var tile = new Tile(tiledata);
+			this.addChild(tile);
+			tile.x = tiledata.x * this.TextruesSize;
+			tile.y = tiledata.y * this.TextruesSize;
+			this.tileArray.push(tile);
+		}
     }
 
-    private grid: Grid = new Grid(10, 10);
-    private astar: AStar = new AStar();
-
-    public astarPath(beginX: number, beginY: number, endX: number, endY: number): TileNode[] {
-
-        var path: TileNode[] = new Array();
-        this.grid.setStartNode(beginX, beginY);
-        this.grid.setEndNode(endX, endY);
-
-        if (this.astar.findPath(this.grid)) {
-            path = this.astar.getPath();
+    public getTile(x: number, y: number): any {
+        for (var i = 0; i < this.tileArray.length; i++) {
+			if (this.tileArray[i].x / this.TextruesSize == x && this.tileArray[i].y / this.TextruesSize == y) {
+				break;
+			}
         }
-
-        return path;
-
+        return this.tileArray[i];
     }
 
+    public setStartTile(x: number, y: number) {
+        for (var i = 0; i < this.tileArray.length; i++) {
+			if (this.tileArray[i].x / this.TextruesSize == x && this.tileArray[i].y / this.TextruesSize == y) {
+				break;
+			}
+        }
+        this.startTile = this.tileArray[i];
+    }
+
+    public setEndTile(x: number, y: number) {
+        for (var i = 0; i < this.tileArray.length; i++) {
+			if (this.tileArray[i].x / this.TextruesSize == x && this.tileArray[i].y / this.TextruesSize == y) {
+				break;
+			}
+        }
+        this.endTile = this.tileArray[i];
+    }
+
+    public getNumCols(): any {
+        return this.numCols;
+    }
+
+    public getNumRows(): any {
+        return this.numRows;
+    }
+
+    public getStartTile(): any {
+        return this.startTile;
+    }
 }
+
+class Tile extends egret.DisplayObjectContainer {
+    public bitmaps;
+    public bitmapSize = 64;
+    public tileData: TileNode;
+    public tileParent: Tile;
+
+    constructor(tiledata: TileNode) {
+        super();
+        this.tileData = tiledata;
+        this.bitmaps = new egret.Bitmap();
+        this.addChild(this.bitmaps);
+        this.bitmaps.texture = RES.getRes(tiledata.pictureName);
+        this.bitmaps.width = this.bitmapSize;
+        this.bitmaps.height = this.bitmapSize;
+
+    }
+}
+

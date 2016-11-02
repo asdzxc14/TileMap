@@ -30,6 +30,17 @@ var Main = (function (_super) {
     __extends(Main, _super);
     function Main() {
         _super.call(this);
+        this.EventPoint = new egret.Point();
+        this.Player = new Character();
+        this.GoalPoint = new egret.Point();
+        this.DistancePoint = new egret.Point();
+        this.MoveTime = 0;
+        this.tileSize = 64;
+        this.ifFindAWay = false;
+        this.currentPath = 0;
+        this.movingTime = 32;
+        this.ifOnGoal = false;
+        this.ifStartMove = false;
         this.addEventListener(egret.Event.ADDED_TO_STAGE, this.onAddToStage, this);
     }
     var d = __define,c=Main,p=c.prototype;
@@ -101,23 +112,43 @@ var Main = (function (_super) {
      * Create a game scene
      */
     p.createGameScene = function () {
-        var numCols = 10;
-        var numRows = 10;
-        var map = new TileMap();
-        this.addChild(map);
+        var _this = this;
         var stageW = this.stage.stageWidth;
         var stageH = this.stage.stageHeight;
-        this.touchEnabled = true;
-        this.Player = new Character();
-        this.addChild(this.Player);
-        this.Player.x = stageW / 2;
-        this.Player.y = stageH / 2;
-        this.Player.Idle();
-        this.touchEnabled = true;
-        this.addEventListener(egret.TouchEvent.TOUCH_TAP, this.Walk, this);
-    };
-    p.Walk = function (event) {
-        this.Player.Walk(event.stageX, event.stageY);
+        this.map01 = new GameMap();
+        this.addChild(this.map01);
+        this.addChild(this.Player.PersonBitmap);
+        this.Player.PersonBitmap.x = 0;
+        this.Player.PersonBitmap.y = 0;
+        this.map01.startTile = this.map01.getTile(0, 0);
+        this.map01.endTile = this.map01.getTile(0, 0);
+        this.astar = new AStar();
+        this.stage.addEventListener(egret.TouchEvent.TOUCH_BEGIN, function (e) {
+            _this.ifStartMove = true;
+            _this.playerx = Math.floor(_this.Player.PersonBitmap.x / _this.tileSize);
+            _this.playery = Math.floor(_this.Player.PersonBitmap.y / _this.tileSize);
+            _this.playerBitX = _this.Player.PersonBitmap.x;
+            _this.playerBitY = _this.Player.PersonBitmap.y;
+            _this.map01.startTile = _this.map01.getTile(_this.playerx, _this.playery);
+            _this.currentPath = 0;
+            _this.EventPoint.x = e.stageX;
+            _this.EventPoint.y = e.stageY;
+            _this.tileX = Math.floor(_this.EventPoint.x / _this.tileSize);
+            _this.tileY = Math.floor(_this.EventPoint.y / _this.tileSize);
+            _this.map01.endTile = _this.map01.getTile(_this.tileX, _this.tileY);
+            _this.ifFindAWay = _this.astar.findPath(_this.map01);
+            if (_this.ifFindAWay) {
+                _this.Player.SetState(new WalkingState(), _this);
+                _this.currentPath = 0;
+            }
+            for (var i = 0; i < _this.astar.pathArray.length; i++) {
+                console.log(_this.astar.pathArray[i].x + " And " + _this.astar.pathArray[i].y);
+            }
+            if (_this.ifFindAWay)
+                _this.map01.startTile = _this.map01.endTile;
+        }, this);
+        this.PlayerMove();
+        this.PlayerAnimation();
     };
     /**
      * 根据name关键字创建一个Bitmap对象。name属性请参考resources/resource.json配置文件的内容。
@@ -129,217 +160,132 @@ var Main = (function (_super) {
         result.texture = texture;
         return result;
     };
-    /**
-     * 描述文件加载成功，开始播放动画
-     * Description file loading is successful, start to play the animation
-     */
-    p.startAnimation = function (result) {
+    p.PlayerMove = function () {
+        var _this = this;
         var self = this;
-        var parser = new egret.HtmlTextParser();
-        var textflowArr = [];
-        for (var i = 0; i < result.length; i++) {
-            textflowArr.push(parser.parser(result[i]));
-        }
-        var textfield = self.textfield;
-        var count = -1;
-        var change = function () {
-            count++;
-            if (count >= textflowArr.length) {
-                count = 0;
+        egret.Ticker.getInstance().register(function () {
+            if (_this.ifStartMove && self.ifFindAWay) {
+                if (self.currentPath < self.astar.pathArray.length - 1) {
+                    var distanceX = self.astar.pathArray[self.currentPath + 1].x - self.astar.pathArray[self.currentPath].x;
+                    var distanceY = self.astar.pathArray[self.currentPath + 1].y - self.astar.pathArray[self.currentPath].y;
+                    if (distanceX > 0) {
+                        self.Player.SetRightOrLeftState(new GoRightState(), self);
+                    }
+                    if (distanceX <= 0) {
+                        self.Player.SetRightOrLeftState(new GoLeftState(), self);
+                    }
+                    if (!self.IfOnGoal(self.astar.pathArray[self.currentPath + 1])) {
+                        self.Player.PersonBitmap.x += distanceX / self.movingTime;
+                        self.Player.PersonBitmap.y += distanceY / self.movingTime;
+                    }
+                    else {
+                        self.currentPath += 1;
+                    }
+                }
             }
-            var lineArr = textflowArr[count];
-            self.changeDescription(textfield, lineArr);
-            var tw = egret.Tween.get(textfield);
-            tw.to({ "alpha": 1 }, 200);
-            tw.wait(2000);
-            tw.to({ "alpha": 0 }, 200);
-            tw.call(change, self);
-        };
-        change();
+            if (_this.ifStartMove && !self.ifFindAWay) {
+                var distanceX = self.map01.startTile.x - self.playerBitX;
+                var distanceY = self.map01.startTile.y - self.playerBitY;
+                if (distanceX > 0) {
+                    self.Player.SetRightOrLeftState(new GoRightState(), self);
+                }
+                if (distanceX <= 0) {
+                    self.Player.SetRightOrLeftState(new GoLeftState(), self);
+                }
+                if (!self.IfOnGoal(self.map01.startTile)) {
+                    self.Player.PersonBitmap.x += distanceX / self.movingTime;
+                    self.Player.PersonBitmap.y += distanceY / self.movingTime;
+                }
+                else
+                    self.Player.SetState(new IdleState(), self);
+            }
+        }, self);
     };
-    /**
-     * 切换描述内容
-     * Switch to described content
-     */
-    p.changeDescription = function (textfield, textFlow) {
-        textfield.textFlow = textFlow;
+    p.PictureMove = function (pic) {
+        var self = this;
+        var MapMove = function () {
+            egret.Tween.removeTweens(pic);
+            var dis = self.Player.PersonBitmap.x - self.EventPoint.x;
+            if (self.Player.GetIfGoRight() && pic.x >= -(pic.width - self.stage.stageWidth)) {
+                egret.Tween.get(pic).to({ x: pic.x - Math.abs(dis) }, self.MoveTime);
+            }
+            if (self.Player.GetIfGoLeft() && pic.x <= 0) {
+                egret.Tween.get(pic).to({ x: pic.x + Math.abs(dis) }, self.MoveTime);
+            }
+        };
+        MapMove();
+    };
+    p.IfOnGoal = function (tile) {
+        var self = this;
+        if (self.Player.PersonBitmap.x == tile.x && self.Player.PersonBitmap.y == tile.y)
+            this.ifOnGoal = true;
+        else
+            this.ifOnGoal = false;
+        return this.ifOnGoal;
+    };
+    p.PlayerAnimation = function () {
+        var self = this;
+        var n = 0;
+        var GOR = 0;
+        var GOL = 0;
+        var frame1 = 0;
+        var frame2 = 0;
+        var frame3 = 0;
+        var standArr = ["01_png", "02_png", "03_png", "04_png", "05_png", "06_png", "07_png", "08_png", "09_png", "10_png"];
+        var walkRightArr = ["21_png", "22_png", "23_png", "24_png", "25_png", "26_png", "27_png", "28_png", "29_png", "30_png", "31_png", "2_png", "33_png", "34_png", "35_png"];
+        var MoveAnimation = function () {
+            egret.Ticker.getInstance().register(function () {
+                if (frame1 % 4 == 0) {
+                    if (self.Player.GetIfIdle() && !self.Player.GetIfWalk()) {
+                        GOR = 0;
+                        GOL = 0;
+                        var textureName = standArr[n];
+                        var texture = RES.getRes(textureName);
+                        self.Player.PersonBitmap.texture = texture;
+                        n++;
+                        if (n >= standArr.length) {
+                            n = 0;
+                        }
+                    }
+                    if (self.Player.GetIfWalk() && self.Player.GetIfGoRight() && !self.Player.GetIfIdle()) {
+                        n = 0;
+                        GOL = 0;
+                        var textureName = walkRightArr[GOR];
+                        var texture = RES.getRes(textureName);
+                        self.Player.PersonBitmap.texture = texture;
+                        GOR++;
+                        if (GOR >= walkRightArr.length) {
+                            GOR = 0;
+                        }
+                    }
+                    if (self.Player.GetIfWalk() && self.Player.GetIfGoLeft() && !self.Player.GetIfIdle()) {
+                        n = 0;
+                        GOR = 0;
+                        var textureName = walkRightArr[GOL];
+                        var texture = RES.getRes(textureName);
+                        self.Player.PersonBitmap.texture = texture;
+                        GOL++;
+                        if (GOL >= walkRightArr.length) {
+                            GOL = 0;
+                        }
+                    }
+                }
+                if (self.IfOnGoal(self.map01.endTile)) {
+                    self.Player.SetState(new IdleState(), self);
+                }
+            }, self);
+        };
+        var FramePlus = function () {
+            egret.Ticker.getInstance().register(function () {
+                frame1++;
+                if (frame1 == 400)
+                    frame1 = 0;
+            }, self);
+        };
+        MoveAnimation();
+        FramePlus();
     };
     return Main;
 }(egret.DisplayObjectContainer));
 egret.registerClass(Main,'Main');
-var Character = (function (_super) {
-    __extends(Character, _super);
-    function Character() {
-        _super.call(this);
-        this.PlayerSta = new characterStateChange;
-        this.WalkSpeed = 15;
-        this.Modle = 0;
-        this.WalkAnmt = new Array();
-        this.IdleAnmt = new Array();
-        this.PlayerPic = this.createBitmapByName("01_png");
-        this.addChild(this.PlayerPic);
-        this.Loading();
-        this.anchorOffsetX = this.PlayerPic.width / 2;
-        this.anchorOffsetY = this.PlayerPic.height;
-    }
-    var d = __define,c=Character,p=c.prototype;
-    p.Loading = function () {
-        var texture = RES.getRes("01_png");
-        this.IdleAnmt.push(texture);
-        texture = RES.getRes("02_png");
-        this.IdleAnmt.push(texture);
-        texture = RES.getRes("03_png");
-        this.IdleAnmt.push(texture);
-        texture = RES.getRes("04_png");
-        this.IdleAnmt.push(texture);
-        texture = RES.getRes("05_png");
-        this.IdleAnmt.push(texture);
-        texture = RES.getRes("06_png");
-        this.IdleAnmt.push(texture);
-        texture = RES.getRes("07_png");
-        this.IdleAnmt.push(texture);
-        texture = RES.getRes("08_png");
-        this.IdleAnmt.push(texture);
-        texture = RES.getRes("09_png");
-        this.IdleAnmt.push(texture);
-        texture = RES.getRes("10_png");
-        this.IdleAnmt.push(texture);
-        texture = RES.getRes("21_png");
-        this.WalkAnmt.push(texture);
-        texture = RES.getRes("22_png");
-        this.WalkAnmt.push(texture);
-        texture = RES.getRes("23_png");
-        this.WalkAnmt.push(texture);
-        texture = RES.getRes("24_png");
-        this.WalkAnmt.push(texture);
-        texture = RES.getRes("25_png");
-        this.WalkAnmt.push(texture);
-        texture = RES.getRes("26_png");
-        this.WalkAnmt.push(texture);
-        texture = RES.getRes("27_png");
-        this.WalkAnmt.push(texture);
-        texture = RES.getRes("28_png");
-        this.WalkAnmt.push(texture);
-        texture = RES.getRes("29_png");
-        this.WalkAnmt.push(texture);
-        texture = RES.getRes("30_png");
-        this.WalkAnmt.push(texture);
-        texture = RES.getRes("31_png");
-        this.WalkAnmt.push(texture);
-        texture = RES.getRes("32_png");
-        this.WalkAnmt.push(texture);
-        texture = RES.getRes("33_png");
-        this.WalkAnmt.push(texture);
-        texture = RES.getRes("34_png");
-        this.WalkAnmt.push(texture);
-        texture = RES.getRes("35_png");
-        this.WalkAnmt.push(texture);
-    };
-    p.PlayAnmt = function (Anmt) {
-        var count = 0;
-        var Ptc = this.PlayerPic;
-        var mdl = this.Modle;
-        var timer = new egret.Timer(100, 0);
-        timer.addEventListener(egret.TimerEvent.TIMER, Play, this);
-        timer.start();
-        function Play() {
-            Ptc.texture = Anmt[count];
-            if (count < Anmt.length - 1) {
-                count++;
-            }
-            else {
-                count = 0;
-            }
-            if (this.Modle != mdl) {
-                timer.stop();
-            }
-        }
-    };
-    p.Walk = function (x, y) {
-        var WalkState = new characterWalkState(x, y, this);
-        this.PlayerSta.Reload(WalkState);
-    };
-    p.Idle = function () {
-        var IdleState = new characterIdleState(this);
-        this.PlayerSta.Reload(IdleState);
-    };
-    p.createBitmapByName = function (name) {
-        var result = new egret.Bitmap();
-        var texture = RES.getRes(name);
-        result.texture = texture;
-        return result;
-    };
-    return Character;
-}(egret.DisplayObjectContainer));
-egret.registerClass(Character,'Character');
-var characterWalkState = (function () {
-    function characterWalkState(x, y, Player) {
-        this.Targety = y;
-        this.Targetx = x;
-        this.Player = Player;
-    }
-    var d = __define,c=characterWalkState,p=c.prototype;
-    p.onStartState = function () {
-        var _this = this;
-        this.Player.Modle++;
-        var distanceX = this.Targetx - this.Player.x;
-        var distanceY = this.Targety - this.Player.y;
-        if (distanceX > 0) {
-            this.Player.scaleX = 1;
-        }
-        else {
-            this.Player.scaleX = -1;
-        }
-        var distance = Math.pow(distanceX * distanceX + distanceY * distanceY, 0.5);
-        var time = distance / this.Player.WalkSpeed;
-        this.timer = new egret.Timer(50, time);
-        this.TotleTime = time;
-        this.timer.addEventListener(egret.TimerEvent.TIMER, function () {
-            _this.Player.x += distanceX / time;
-            _this.Player.y += distanceY / time;
-            _this.TotleTime--;
-            if (_this.TotleTime < 1) {
-                _this.timer.stop();
-                if (_this.TotleTime > -5) {
-                    _this.Player.Idle();
-                }
-            }
-        }, this);
-        this.timer.start();
-        this.Player.PlayAnmt(this.Player.WalkAnmt);
-    };
-    p.onStopState = function () {
-        this.TotleTime = -5;
-    };
-    return characterWalkState;
-}());
-egret.registerClass(characterWalkState,'characterWalkState',["State"]);
-var characterIdleState = (function () {
-    function characterIdleState(Player) {
-        this.Player = Player;
-    }
-    var d = __define,c=characterIdleState,p=c.prototype;
-    p.onStartState = function () {
-        this.Player.Modle = 0;
-        this.Player.PlayAnmt(this.Player.IdleAnmt);
-    };
-    p.onStopState = function () {
-    };
-    return characterIdleState;
-}());
-egret.registerClass(characterIdleState,'characterIdleState',["State"]);
-var characterStateChange = (function () {
-    function characterStateChange() {
-    }
-    var d = __define,c=characterStateChange,p=c.prototype;
-    p.Reload = function (S) {
-        if (this.CurrentState) {
-            this.CurrentState.onStopState();
-        }
-        this.CurrentState = S;
-        this.CurrentState.onStartState();
-    };
-    return characterStateChange;
-}());
-egret.registerClass(characterStateChange,'characterStateChange');
 //# sourceMappingURL=Main.js.map
