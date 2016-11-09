@@ -1,7 +1,7 @@
 {
 	"groups": [
 		{
-			"keys": "description_json,21_png,22_png,35_png,34_png,33_png,32_png,31_png,29_png,30_png,28_png,27_png,26_png,25_png,24_png,23_png,ground_jpg,obstacle_jpg,01_png,02_png,03_png,04_png,05_png,06_png,07_png,08_png,09_png,10_png",
+			"keys": "description_json,21_png,22_png,35_png,34_png,33_png,32_png,31_png,29_png,30_png,28_png,27_png,26_png,25_png,24_png,23_png,01_png,02_png,03_png,04_png,05_png,06_png,07_png,08_png,09_png,10_png,grass_jpg,spiling_jpg,stone_jpg,tree_jpg,pathway_jpg",
 			"name": "preload"
 		}
 	],
@@ -87,16 +87,6 @@
 			"url": "assets/Walk/23.png"
 		},
 		{
-			"name": "ground_jpg",
-			"type": "image",
-			"url": "assets/ground.jpg"
-		},
-		{
-			"name": "obstacle_jpg",
-			"type": "image",
-			"url": "assets/obstacle.jpg"
-		},
-		{
 			"name": "01_png",
 			"type": "image",
 			"url": "assets/Idle/01.png"
@@ -145,6 +135,31 @@
 			"name": "10_png",
 			"type": "image",
 			"url": "assets/Idle/10.png"
+		},
+		{
+			"name": "grass_jpg",
+			"type": "image",
+			"url": "assets/grass.jpg"
+		},
+		{
+			"name": "spiling_jpg",
+			"type": "image",
+			"url": "assets/spiling.jpg"
+		},
+		{
+			"name": "stone_jpg",
+			"type": "image",
+			"url": "assets/stone.jpg"
+		},
+		{
+			"name": "tree_jpg",
+			"type": "image",
+			"url": "assets/tree.jpg"
+		},
+		{
+			"name": "pathway_jpg",
+			"type": "image",
+			"url": "assets/pathway.jpg"
 		}
 	]
 }

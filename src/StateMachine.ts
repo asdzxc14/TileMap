@@ -1,11 +1,11 @@
 interface State {
-    OnState(_tmain: Main);
-    ExitState(_tmain: Main);
+    onEnter(_tmain: Main);
+    onExit(_tmain: Main);
 }
 
-class PeopleState implements State {
-    OnState(_tmain: Main) { };
-    ExitState(_tmain: Main) { };
+class CharacterState implements State {
+    onEnter(_tmain: Main) { };
+    onExit(_tmain: Main) { };
 }
 
 class StateMachine {
@@ -13,49 +13,48 @@ class StateMachine {
 
     setState(e: State, _tmain: Main) {
         if (this.CurrentState != null) {
-            this.CurrentState.ExitState(_tmain);
+            this.CurrentState.onExit(_tmain);
         }
         this.CurrentState = e;
-        this.CurrentState.OnState(_tmain);
+        this.CurrentState.onEnter(_tmain);
     }
 }
 
 
-class IdleState implements PeopleState {
-    OnState(_tmain: Main) {
-        _tmain.Player.SetIdle(true);
-        _tmain.Player.SetWalk(false);
+class CharacterIdleState implements CharacterState {
+    onEnter(_tmain: Main) {
+        _tmain.character.ifIdle=true;
     };
 
-    ExitState(_tmain: Main) {
-        _tmain.Player.SetIdle(false);
+    onExit(_tmain: Main) {
+        _tmain.character.ifIdle=false;
     };
 
 }
 
-class WalkingState implements PeopleState {
-    OnState(_tmain: Main) {
-        _tmain.Player.SetIdle(false);
-        _tmain.Player.SetWalk(true);
+class CharacterWalkingState implements CharacterState {
+    onEnter(_tmain: Main) {
+        _tmain.character.ifWalking=true;
     };
 
-    ExitState(_tmain: Main) {
-        _tmain.Player.SetWalk(false);
+    onExit(_tmain: Main) {
+        _tmain.character.ifWalking=false;
     };
 }
 
-class GoRightState implements PeopleState {
-    OnState(_tmain: Main) {
-        _tmain.Player.SetGoRight();
+class CharacterGoRightState implements CharacterState {
+    onEnter(_tmain: Main) {
+        _tmain.character.SetGoRight();
     };
 
-    ExitState(_tmain: Main) { };
+    onExit(_tmain: Main) { };
 
 }
 
-class GoLeftState implements PeopleState {
-    OnState(_tmain: Main) {
-        _tmain.Player.SetGoLeft();
+class CharacterGoLeftState implements CharacterState {
+    onEnter(_tmain: Main) {
+        _tmain.character.SetGoLeft();
     };
-    ExitState(_tmain: Main) { };
+
+    onExit(_tmain: Main) { };
 }

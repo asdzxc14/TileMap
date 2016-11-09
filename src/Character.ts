@@ -1,60 +1,42 @@
 class Character {
-    public PersonBitmap: egret.Bitmap;
-    private IsIdle: boolean;
-    private IsWalking: boolean;
-    private GoRight: boolean = false;
-    private GoLeft: boolean = false;
-    private IdleOrWalkStateMachine: StateMachine;
-    private LeftOrRightStateMachine: StateMachine;
+    public characterBitmap: egret.Bitmap;
+    public ifIdle: boolean;
+    public ifWalking: boolean;
+    private goRight: boolean = false;
+    private goLeft: boolean = false;
+    private idleOrWalkStateMachine: StateMachine;
+    private leftOrRightStateMachine: StateMachine;
 
     constructor() {
-        this.PersonBitmap = new egret.Bitmap();
-        this.PersonBitmap.width = 49;
-        this.PersonBitmap.height = 64;
-        this.IsIdle = true;
-        this.IsWalking = false;
-        this.IdleOrWalkStateMachine = new StateMachine();
-        this.LeftOrRightStateMachine = new StateMachine();
-
+        this.characterBitmap = new egret.Bitmap();
+        this.characterBitmap.width = 49;
+        this.characterBitmap.height = 64;
+        this.ifIdle = true;
+        this.ifWalking = false;
+        this.idleOrWalkStateMachine = new StateMachine();
+        this.leftOrRightStateMachine = new StateMachine();
     }
 
-    public SetPersonBitmap(picture: egret.Bitmap) {
-        this.PersonBitmap = picture;
-    }
-
-
-    public SetIdle(set: boolean) {
-        this.IsIdle = set;
-    }
-
-    public GetIfIdle(): boolean {
-        return this.IsIdle;
-    }
-
-    public SetWalk(set: boolean) {
-        this.IsWalking = set;
-    }
-
-    public GetIfWalk(): boolean {
-        return this.IsWalking
+    public SetCharacterBitmap(picture: egret.Bitmap) {
+        this.characterBitmap = picture;
     }
 
     public SetGoRight() {
-        this.GoRight = true;
-        this.GoLeft = false;
+        this.goRight = true;
+        this.goLeft = false;
     }
 
     public GetIfGoRight(): boolean {
-        return this.GoRight;
+        return this.goRight;
     }
 
     public SetGoLeft() {
-        this.GoLeft = true;
-        this.GoRight = false;
+        this.goLeft = true;
+        this.goRight = false;
     }
 
     public GetIfGoLeft(): boolean {
-        return this.GoLeft;
+        return this.goLeft;
     }
 
     private createBitmapByName(name: string): egret.Bitmap {
@@ -65,11 +47,11 @@ class Character {
     }
 
     public SetState(e: State, _tmain: Main) {
-        this.IdleOrWalkStateMachine.setState(e, _tmain);
+        this.idleOrWalkStateMachine.setState(e, _tmain);
     }
 
     public SetRightOrLeftState(e: State, _tmain: Main) {
-        this.LeftOrRightStateMachine.setState(e, _tmain);
+        this.leftOrRightStateMachine.setState(e, _tmain);
     }
 }
 

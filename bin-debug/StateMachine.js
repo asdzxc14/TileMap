@@ -1,84 +1,82 @@
-var PeopleState = (function () {
-    function PeopleState() {
+var CharacterState = (function () {
+    function CharacterState() {
     }
-    var d = __define,c=PeopleState,p=c.prototype;
-    p.OnState = function (_tmain) { };
+    var d = __define,c=CharacterState,p=c.prototype;
+    p.onEnter = function (_tmain) { };
     ;
-    p.ExitState = function (_tmain) { };
+    p.onExit = function (_tmain) { };
     ;
-    return PeopleState;
+    return CharacterState;
 }());
-egret.registerClass(PeopleState,'PeopleState',["State"]);
+egret.registerClass(CharacterState,'CharacterState',["State"]);
 var StateMachine = (function () {
     function StateMachine() {
     }
     var d = __define,c=StateMachine,p=c.prototype;
     p.setState = function (e, _tmain) {
         if (this.CurrentState != null) {
-            this.CurrentState.ExitState(_tmain);
+            this.CurrentState.onExit(_tmain);
         }
         this.CurrentState = e;
-        this.CurrentState.OnState(_tmain);
+        this.CurrentState.onEnter(_tmain);
     };
     return StateMachine;
 }());
 egret.registerClass(StateMachine,'StateMachine');
-var IdleState = (function () {
-    function IdleState() {
+var CharacterIdleState = (function () {
+    function CharacterIdleState() {
     }
-    var d = __define,c=IdleState,p=c.prototype;
-    p.OnState = function (_tmain) {
-        _tmain.Player.SetIdle(true);
-        _tmain.Player.SetWalk(false);
+    var d = __define,c=CharacterIdleState,p=c.prototype;
+    p.onEnter = function (_tmain) {
+        _tmain.character.ifIdle = true;
     };
     ;
-    p.ExitState = function (_tmain) {
-        _tmain.Player.SetIdle(false);
+    p.onExit = function (_tmain) {
+        _tmain.character.ifIdle = false;
     };
     ;
-    return IdleState;
+    return CharacterIdleState;
 }());
-egret.registerClass(IdleState,'IdleState');
-var WalkingState = (function () {
-    function WalkingState() {
+egret.registerClass(CharacterIdleState,'CharacterIdleState');
+var CharacterWalkingState = (function () {
+    function CharacterWalkingState() {
     }
-    var d = __define,c=WalkingState,p=c.prototype;
-    p.OnState = function (_tmain) {
-        _tmain.Player.SetIdle(false);
-        _tmain.Player.SetWalk(true);
+    var d = __define,c=CharacterWalkingState,p=c.prototype;
+    p.onEnter = function (_tmain) {
+        _tmain.character.ifWalking = true;
     };
     ;
-    p.ExitState = function (_tmain) {
-        _tmain.Player.SetWalk(false);
+    p.onExit = function (_tmain) {
+        _tmain.character.ifWalking = false;
     };
     ;
-    return WalkingState;
+    return CharacterWalkingState;
 }());
-egret.registerClass(WalkingState,'WalkingState');
-var GoRightState = (function () {
-    function GoRightState() {
+egret.registerClass(CharacterWalkingState,'CharacterWalkingState');
+var CharacterGoRightState = (function () {
+    function CharacterGoRightState() {
     }
-    var d = __define,c=GoRightState,p=c.prototype;
-    p.OnState = function (_tmain) {
-        _tmain.Player.SetGoRight();
+    var d = __define,c=CharacterGoRightState,p=c.prototype;
+    p.onEnter = function (_tmain) {
+        _tmain.character.SetGoRight();
     };
     ;
-    p.ExitState = function (_tmain) { };
+    p.onExit = function (_tmain) { };
     ;
-    return GoRightState;
+    return CharacterGoRightState;
 }());
-egret.registerClass(GoRightState,'GoRightState');
-var GoLeftState = (function () {
-    function GoLeftState() {
+egret.registerClass(CharacterGoRightState,'CharacterGoRightState');
+var CharacterGoLeftState = (function () {
+    function CharacterGoLeftState() {
     }
-    var d = __define,c=GoLeftState,p=c.prototype;
-    p.OnState = function (_tmain) {
-        _tmain.Player.SetGoLeft();
+    var d = __define,c=CharacterGoLeftState,p=c.prototype;
+    p.onEnter = function (_tmain) {
+        _tmain.character.SetGoLeft();
     };
     ;
-    p.ExitState = function (_tmain) { };
+    p.onExit = function (_tmain) { };
     ;
-    return GoLeftState;
+    return CharacterGoLeftState;
 }());
-egret.registerClass(GoLeftState,'GoLeftState');
+egret.registerClass(CharacterGoLeftState,'CharacterGoLeftState');
 //# sourceMappingURL=StateMachine.js.map

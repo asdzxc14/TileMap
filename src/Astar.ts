@@ -95,7 +95,6 @@ class AStar {
                         test.tileParent = tile;
                         this._open.push(test);
                     }
-
                 }
             }
             this._closed.push(tile);
@@ -107,11 +106,9 @@ class AStar {
         }
         this.buildPath();
         return true;
-
     }
 
     private buildPath(): void {
-
         var tile: Tile = this.endTile;
         this.pathArray.push(tile);
         while (tile != this.startTile) {
@@ -139,5 +136,4 @@ class AStar {
         var straight: number = dx + dy;
         return this.diagCost * diag + this.straightCost * (straight - 2 * diag);
     }
-
 }

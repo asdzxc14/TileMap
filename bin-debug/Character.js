@@ -1,44 +1,32 @@
 var Character = (function () {
     function Character() {
-        this.GoRight = false;
-        this.GoLeft = false;
-        this.PersonBitmap = new egret.Bitmap();
-        this.PersonBitmap.width = 49;
-        this.PersonBitmap.height = 64;
-        this.IsIdle = true;
-        this.IsWalking = false;
-        this.IdleOrWalkStateMachine = new StateMachine();
-        this.LeftOrRightStateMachine = new StateMachine();
+        this.goRight = false;
+        this.goLeft = false;
+        this.characterBitmap = new egret.Bitmap();
+        this.characterBitmap.width = 49;
+        this.characterBitmap.height = 64;
+        this.ifIdle = true;
+        this.ifWalking = false;
+        this.idleOrWalkStateMachine = new StateMachine();
+        this.leftOrRightStateMachine = new StateMachine();
     }
     var d = __define,c=Character,p=c.prototype;
-    p.SetPersonBitmap = function (picture) {
-        this.PersonBitmap = picture;
-    };
-    p.SetIdle = function (set) {
-        this.IsIdle = set;
-    };
-    p.GetIfIdle = function () {
-        return this.IsIdle;
-    };
-    p.SetWalk = function (set) {
-        this.IsWalking = set;
-    };
-    p.GetIfWalk = function () {
-        return this.IsWalking;
+    p.SetCharacterBitmap = function (picture) {
+        this.characterBitmap = picture;
     };
     p.SetGoRight = function () {
-        this.GoRight = true;
-        this.GoLeft = false;
+        this.goRight = true;
+        this.goLeft = false;
     };
     p.GetIfGoRight = function () {
-        return this.GoRight;
+        return this.goRight;
     };
     p.SetGoLeft = function () {
-        this.GoLeft = true;
-        this.GoRight = false;
+        this.goLeft = true;
+        this.goRight = false;
     };
     p.GetIfGoLeft = function () {
-        return this.GoLeft;
+        return this.goLeft;
     };
     p.createBitmapByName = function (name) {
         var result = new egret.Bitmap();
@@ -47,10 +35,10 @@ var Character = (function () {
         return result;
     };
     p.SetState = function (e, _tmain) {
-        this.IdleOrWalkStateMachine.setState(e, _tmain);
+        this.idleOrWalkStateMachine.setState(e, _tmain);
     };
     p.SetRightOrLeftState = function (e, _tmain) {
-        this.LeftOrRightStateMachine.setState(e, _tmain);
+        this.leftOrRightStateMachine.setState(e, _tmain);
     };
     return Character;
 }());
